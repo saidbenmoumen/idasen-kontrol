@@ -8,6 +8,7 @@ import {
   faChevronUp,
   faFloppyDisk,
   faHashtag,
+  faPowerOff,
   faRotateRight,
   faStop,
   faToggleOff,
@@ -26,7 +27,7 @@ import { twMerge } from "tailwind-merge";
 export const Desk = () => {
   const {
     state: { device, currentPosition, slots, autoMove, slotSaving },
-    actions: { setSlot, toggleAutoMove, setSlotSaving },
+    actions: { setSlot, toggleAutoMove, setSlotSaving, onDisconnect },
     desk,
   } = useController();
   if (device === null) return <div>loading...</div>;
@@ -45,11 +46,11 @@ export const Desk = () => {
         </h1>
       </div>
       <div className="grid grid-cols-24 gap-2">
-        <Button className="col-span-3" onClick={() => desk.stop()}>
-          <FontAwesomeIcon icon={faStop} />
+        <Button className="col-span-3 bg-red-500/20 text-white border-red-500/20 hover:bg-red-500/25" onClick={() => onDisconnect()}>
+          <FontAwesomeIcon icon={faPowerOff} />
         </Button>
         <Button className="col-span-3" onClick={() => desk.stop()}>
-          <FontAwesomeIcon icon={faRotateRight} />
+          <FontAwesomeIcon icon={faStop} />
         </Button>
         <Button className="col-span-3" onClick={() => desk.moveUp()}>
           <FontAwesomeIcon icon={faChevronUp} />

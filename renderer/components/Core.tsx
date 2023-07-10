@@ -1,15 +1,13 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUpDown } from "@fortawesome/free-solid-svg-icons";
 import { faGithub } from "@fortawesome/free-brands-svg-icons";
-import WindowButton from "./WindowButton";
 
 interface Props {
-  title: string;
+  // title: string;
   children: React.ReactNode;
 }
 
-const Core: React.FC<Props> = ({ children, title }) => {
+const Core: React.FC<Props> = ({ children }) => {
   return (
     <div className="h-screen w-screen flex flex-col bg-zinc-900 border-b border-x border-zinc-800 text-zinc-100 rounded-bl-xl rounded-br-xl">
       <div className="flex-1 px-3">{children}</div>

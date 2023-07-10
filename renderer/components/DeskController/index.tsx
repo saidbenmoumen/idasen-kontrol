@@ -56,6 +56,10 @@ export const DeskController = ({ children }) => {
         });
         setSlotSaving(false);
       },
+      onDisconnect: async () => {
+        if (!device) return;
+        await device.gatt.disconnect();
+      },
       onPair: async () => {
         if (navigator.bluetooth === undefined)
           return alert("Bluetooth not supported");
@@ -199,9 +203,7 @@ export const DeskController = ({ children }) => {
   };
 
   const handleDisconnect = () => {
-    new Notification("IDASEN Desk disconnected!", {
-      body: "please re-connect!",
-    });
+    new Notification("Desk disconnected!");
     setDevice(null);
     setService(null);
     setServer(null);

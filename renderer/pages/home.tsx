@@ -13,9 +13,9 @@ function Home() {
   return (
     <React.Fragment>
       <Head>
-        <title>IDASEN kontrol</title>
+        <title>IDÅSEN kontrol</title>
       </Head>
-      <Core title="IDASEN control">
+      <Core>
         {device !== null ? <Desk /> : <Connect />}
       </Core>
     </React.Fragment>
