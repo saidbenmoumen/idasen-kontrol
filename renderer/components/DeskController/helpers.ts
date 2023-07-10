@@ -1,6 +1,6 @@
 export const bufferToNum = (buff: any) => new Uint16Array(buff)[0];
 
-export const posToCm = (pos: number) => `${(((381 / 3815) * pos + 612.13) / 10).toFixed(1)}CM`;
+export const posToCm = (pos: number):number => Number((((381 / 3815) * pos + 612.13) / 10).toFixed(2))
 
 export const hexStrToArray = (hexString: string) => {
   let decimals = [];

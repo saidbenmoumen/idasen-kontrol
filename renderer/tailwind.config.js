@@ -5,7 +5,12 @@ module.exports = {
     "./renderer/layouts/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      gridTemplateColumns: {
+        '24': 'repeat(24, minmax(0, 1fr))',
+        '16': 'repeat(16, minmax(0, 1fr))',
+      }
+    },
   },
   plugins: [],
 };

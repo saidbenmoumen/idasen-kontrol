@@ -26,8 +26,8 @@ if (isProd) {
     title: "IDÅSEN control",
     width: 480,
     minWidth: 380,
-    height: 164,
-    frame: false,
+    height: 154,
+    frame: true,
     transparent: true,
     icon: getAssetPath("icon.png"),
   });

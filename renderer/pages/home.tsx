@@ -13,7 +13,7 @@ function Home() {
   return (
     <React.Fragment>
       <Head>
-        <title>Home - Nextron (with-typescript-tailwindcss)</title>
+        <title>IDASEN kontrol</title>
       </Head>
       <Core title="IDASEN control">
         {device !== null ? <Desk /> : <Connect />}

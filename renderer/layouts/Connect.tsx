@@ -9,7 +9,6 @@ export const Connect = () => {
   } = useController();
   return (
     <div className="flex h-full items-center justify-center text-center flex-col gap-2">
-      <h1 className="text-sm font-thin">No Desk Connected</h1>
       <Button
         onClick={() => {
           onPair();
