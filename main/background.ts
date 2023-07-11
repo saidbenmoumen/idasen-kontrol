@@ -43,6 +43,10 @@ if (isProd) {
     mainWindow.minimize();
   });
 
+  ipcMain.on("app-settings", () => {
+    // settings window
+  });
+
   if (isProd) {
     await mainWindow.loadURL("app://./home.html");
   } else {
