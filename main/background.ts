@@ -27,7 +27,6 @@ if (isProd) {
     width: 495,
     minWidth: 412,
     height: 201,
-    maxHeight: 222,
     minHeight: 201,
     frame: false,
     transparent: true,

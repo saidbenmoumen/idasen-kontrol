@@ -27,7 +27,7 @@ export const Desk = () => {
   if (device === null) return <div>loading...</div>;
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2  max-w-xl w-full mx-auto">
       <div className="flex justify-between items-end">
         <h1 className="text-5xl text-white font-extralight leading-none">
           {posToCm(currentPosition)}
