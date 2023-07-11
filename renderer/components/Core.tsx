@@ -12,7 +12,7 @@ interface Props {
 const Core: React.FC<Props> = ({ children, title }) => {
   return (
     <div className="h-screen w-screen flex flex-col bg-zinc-900 border border-zinc-800 text-zinc-100 rounded-xl">
-      <header className="border-b border-zinc-800 p-[.4rem] h-8 items-center justify-center grid grid-cols-12">
+      <header className="p-[.4rem] h-8 items-center justify-center grid grid-cols-12">
         <div className="col-span-4 flex items-center justify-start gap-1">
           <button
             className="w-[1.1rem] aspect-square text-[0.7rem] leading-none flex items-center justify-center rounded-full bg-zinc-700 hover:bg-zinc-600 text-white"
@@ -43,15 +43,15 @@ const Core: React.FC<Props> = ({ children, title }) => {
             className="w-[1.1rem] aspect-square text-[0.7rem] leading-none flex items-center justify-center rounded-full hover:bg-zinc-800 text-zinc-400"
             onClick={() => {
               // ipcRenderer.send("app-settings");
-              alert("TODO: Settings")
+              alert("TODO: Settings");
             }}
           >
             <FontAwesomeIcon icon={faCog} />
           </button>
         </div>
       </header>
-      <div className="flex-1 px-3">{children}</div>
-      <footer className="px-3 py-2 flex items-center justify-between border-t border-zinc-800">
+      <div className="flex-1 px-3 flex flex-col justify-center">{children}</div>
+      <footer className="px-3 py-2 flex items-center justify-between">
         <Link
           href={"https://github.com/glimse-io/idasen-kontrol"}
           target="_blank"

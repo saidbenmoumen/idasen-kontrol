@@ -3,8 +3,8 @@ import { Actions, Slots } from "./types";
 import { Context, defaultSlots } from "./context";
 import { bufferToNum, hexStrToArray } from "./helpers";
 import _ from "lodash";
-
-const interval_duration = 10000;
+const MINUTE_MS = 1000 * 60;
+const INTERVAL_MS = MINUTE_MS * 5;
 
 const onemmtopos = 10;
 const namePrefix = "Desk";
@@ -25,13 +25,11 @@ export const DeskController = ({ children }) => {
   const [server, setServer] = useState<BluetoothRemoteGATTServer | null>(null);
   const [characteristic, setCharacteristic] =
     useState<BluetoothRemoteGATTCharacteristic | null>(null);
-
   const [currentPosition, setCurrentPosition] = useState<number | null>(null);
   const [slots, setSlots] = useState<Slots>(defaultSlots);
   const [slotSaving, setSlotSaving] = useState<boolean>(false);
   const [currentSlot, setCurrentSlot] = useState<number | null>(null);
 
-  const slot_interval = useRef(null);
   const longInterval = useRef(null);
 
   const actions: Actions = useMemo(
@@ -124,82 +122,58 @@ export const DeskController = ({ children }) => {
     if (service === null) throw "Service is not connected.";
     // SEND COMMAND -> once ended set is Not Doing
     const char = await service.getCharacteristic(charID);
-    await char.writeValue(hexStrToArray(cmd)).then(() => {
-      console.log("writeValue");
-    });
-  };
-
-  /**
-   * stop the desk
-   * resets all auto move related stuff
-   */
-  const resetAutoMove = () => {
-    clearTimeout(slot_interval.current);
-    if (currentSlot !== null) setCurrentSlot(null);
-    if (autoMove) setAutoMove(false);
-  };
-
-  const longMoveUp = async () => {
-    await sendCmd("4700");
-    await sendCmd("4700");
-    await sendCmd("4700");
-    await sendCmd("4700");
-    await sendCmd("4700");
-  };
-
-  const longMoveDown = async () => {
-    await sendCmd("4600");
-    await sendCmd("4600");
-    await sendCmd("4600");
-    await sendCmd("4600");
-    await sendCmd("4600");
-  };
-
-  const moveUp = async () => {
-    await sendCmd("4700");
-    await sendCmd("FF00");
-  };
-
-  const moveDown = async () => {
-    await sendCmd("4600");
-    await sendCmd("FF00");
-  };
-
-  const moveTo = async (position: number) => {
-    if (position < min || position > max)
-      throw "Position must be between 0 and 6500";
-
-    longInterval.current = setInterval(() => {
-      setCurrentPosition((curr) => {
-        const diff = position - curr;
-        const needed = Math.abs(diff);
-        const move_way = diff > 0 ? "up" : "down";
-        if (needed <= onemmtopos / 2 && needed >= -(onemmtopos / 2)) {
-          stop();
-          clearInterval(longInterval.current);
-        } else if (needed > 50) {
-          move_way === "up" ? longMoveUp() : longMoveDown();
-        } else {
-          move_way === "up" ? moveUp() : moveDown();
-        }
-        return curr;
-      });
-    }, 500);
-  };
-
-  const stop = async () => {
-    await sendCmd("FF00");
-    await sendCmd("FF00");
-    await sendCmd("FF00");
+    await char.writeValue(hexStrToArray(cmd));
   };
 
   const desk = {
-    moveUp,
-    moveDown,
-    moveTo,
-    longMoveDown,
-    longMoveUp,
-    stop,
+    moveUp: async () => {
+      await sendCmd("4700");
+      await sendCmd("FF00");
+    },
+    moveDown: async () => {
+      await sendCmd("4600");
+      await sendCmd("FF00");
+    },
+    moveTo: async (position: number) => {
+      if (position < min || position > max)
+        throw "Position must be between 0 and 6500";
+
+      longInterval.current = setInterval(() => {
+        setCurrentPosition((curr) => {
+          const diff = position - curr;
+          const needed = Math.abs(diff);
+          const move_way = diff > 0 ? "up" : "down";
+          if (needed <= onemmtopos / 2 && needed >= -(onemmtopos / 2)) {
+            stop();
+            clearInterval(longInterval.current);
+          } else if (needed > 50) {
+            move_way === "up" ? desk.longMoveUp() : desk.longMoveDown();
+          } else {
+            move_way === "up" ? desk.moveUp() : desk.moveDown();
+          }
+          return curr;
+        });
+      }, 500);
+    },
+    longMoveDown: async () => {
+      await sendCmd("4600");
+      await sendCmd("4600");
+      await sendCmd("4600");
+      await sendCmd("4600");
+      await sendCmd("4600");
+    },
+    longMoveUp: async () => {
+      await sendCmd("4700");
+      await sendCmd("4700");
+      await sendCmd("4700");
+      await sendCmd("4700");
+      await sendCmd("4700");
+    },
+    stop: async () => {
+      await sendCmd("FF00");
+      await sendCmd("FF00");
+      await sendCmd("FF00");
+    },
   };
 
   const handleDisconnect = () => {
@@ -209,6 +183,20 @@ export const DeskController = ({ children }) => {
     setServer(null);
     setCharacteristic(null);
   };
+
+  /**
+   * Load slots from local storage
+   */
+  useEffect(() => {
+    const stored_slots = JSON.parse(localStorage.getItem("slots"));
+    if (stored_slots !== null) {
+      const new_slots = new Map();
+      Object.keys(stored_slots).map((key) => {
+        new_slots.set(key, stored_slots[key].value);
+      });
+      setSlots(new_slots);
+    }
+  }, []);
 
   /**
    * Add event listener for disconnection
@@ -221,6 +209,14 @@ export const DeskController = ({ children }) => {
       };
     }
   }, [device]);
+
+  /**
+   * onConnect -> move up slighty to get latest position & data
+   * TODO: re-code
+   */
+  useEffect(() => {
+    if (service !== null) desk.moveUp();
+  }, [service]);
 
   /**
    * Start notifications for position
@@ -240,49 +236,50 @@ export const DeskController = ({ children }) => {
     );
   }, [characteristic]);
 
+  /**
+   * Auto Move Table
+   */
   useEffect(() => {
-    if (autoMove) {
-      // check if there are enough slots
-      if (slotsObj.length < 2) {
-        resetAutoMove();
-        alert("Not enough slots to auto move");
-        return;
-      }
-      // start with first slot key
-      setCurrentSlot(slotsObj[0].key);
-    } else {
-      resetAutoMove();
+    const interval = setInterval(() => {
+      setCurrentSlot((s) => {
+        const next_slot: number =
+          s === null
+            ? Number(slotsObj[0].key)
+            : slotsObj.length - 1 > s
+            ? s + 1
+            : Number(slotsObj[0].key);
+        return next_slot;
+      });
+    }, INTERVAL_MS);
+
+    if (slotsObj.length < 2) {
+      console.log("Not enough slots to auto move");
+      setCurrentSlot(null);
+      clearInterval(interval);
+      return;
     }
+
+    if (!autoMove) {
+      clearInterval(interval);
+      setCurrentSlot(null);
+      return;
+    }
+
+    return () => {
+      clearInterval(interval);
+      setCurrentSlot(null);
+    }; // This represents the unmount function, in which you need to clear your interval to prevent memory leaks.
   }, [autoMove]);
 
   /**
-   * Auto move to next slot
+   * Desk Mover
    */
   useEffect(() => {
     if (currentSlot !== null && autoMove) {
-      slot_interval.current = setTimeout(() => {
-        const next_slot =
-          slotsObj.length - 1 > currentSlot ? currentSlot + 1 : 0;
-        const target_position = slotsObj[next_slot].value;
-        moveTo(target_position);
-        setCurrentSlot(next_slot);
-      }, interval_duration);
+      const target_position = slotsObj[currentSlot].value;
+      desk.moveTo(target_position);
     }
   }, [currentSlot]);
-
-  /**
-   * Load slots from local storage
-   */
-  useEffect(() => {
-    const stored_slots = JSON.parse(localStorage.getItem("slots"));
-    if (stored_slots !== null) {
-      const new_slots = new Map();
-      Object.keys(stored_slots).map((key) => {
-        new_slots.set(key, stored_slots[key].value);
-      });
-      setSlots(new_slots);
-    }
-  }, []);
 
   return (
     <Context.Provider

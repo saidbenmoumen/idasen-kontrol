@@ -24,11 +24,11 @@ if (isProd) {
 
   const mainWindow = createWindow("main", {
     title: "IDÅSEN control",
-    width: 432,
+    width: 495,
     minWidth: 412,
-    height: 222,
+    height: 201,
     maxHeight: 222,
-    minHeight: 222,
+    minHeight: 201,
     frame: false,
     transparent: true,
     icon: getAssetPath("icon.png"),
