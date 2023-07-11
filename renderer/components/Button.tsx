@@ -21,14 +21,15 @@ export default function Button({
   return (
     <button
       className={twMerge(
-        "text-lg border rounded leading-none flex items-center justify-center shadow-lg uppercase font-light",
+        "text-lg ring-1 rounded leading-none flex items-center justify-center shadow-lg uppercase font-medium",
         "transition-all duration-150 ease-in-out", // transition
-        "border-zinc-700 text-zinc-400 shadow-zinc-900", // colors
-        "hover:bg-zinc-700 hover:text-zinc-100 hover:shadow-zinc-800", // hover
+        "ring-zinc-700 text-zinc-400 shadow-zinc-900", // colors
+        "hover:bg-blue-900/30 active:ring hover:text-blue-500 hover:ring-blue-500/25 hover:shadow-blue-800/20", // hover
         sizes[size], // size
         className,
         props.disabled && "opacity-50 pointer-events-none" // disabled
       )}
+      draggable={false}
       type="button"
       {...props}
     >

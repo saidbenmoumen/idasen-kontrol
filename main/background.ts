@@ -1,4 +1,4 @@
-import { app } from "electron";
+import { app, ipcMain } from "electron";
 import serve from "electron-serve";
 import { createWindow } from "./helpers";
 import path from "path";
@@ -24,14 +24,23 @@ if (isProd) {
 
   const mainWindow = createWindow("main", {
     title: "IDÅSEN control",
-    width: 480,
+    width: 432,
     minWidth: 412,
-    height: 190,
-    maxHeight: 190,
-    minHeight: 190,
-    frame: true,
+    height: 222,
+    maxHeight: 222,
+    minHeight: 222,
+    frame: false,
     transparent: true,
     icon: getAssetPath("icon.png"),
+  });
+
+  // ipc communication
+  ipcMain.on("app-quit", () => {
+    app.quit();
+  });
+
+  ipcMain.on("app-minimize", () => {
+    mainWindow.minimize();
   });
 
   if (isProd) {

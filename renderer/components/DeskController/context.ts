@@ -7,15 +7,21 @@ export const defaultSlots: Slots = new Map(
 
 export const Context = createContext<ContextProps>({
   state: {
-    slots: new Map<number, string | null>(defaultSlots),
+    slots: defaultSlots,
     currentPosition: null,
     device: null,
     server: null,
     service: null,
     characteristic: null,
+    autoMove: false,
+    slotSaving: false
   },
   actions: {
     setSlot: () => {},
     onPair: () => {},
+    toggleAutoMove: () => {},
+    setSlotSaving: () => {},
+    onDisconnect: () => {},
   },
+  desk: null
 });

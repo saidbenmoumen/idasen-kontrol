@@ -1,15 +1,9 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  fa1,
-  fa2,
-  fa3,
-  fa4,
   faChevronDown,
   faChevronUp,
   faFloppyDisk,
-  faHashtag,
   faPowerOff,
-  faRotateRight,
   faStop,
   faToggleOff,
   faToggleOn,
@@ -20,8 +14,6 @@ import {
 import Button from "../components/Button";
 import { useController } from "../components/DeskController/useController";
 import { posToCm } from "../components/DeskController/helpers";
-import { faHashnode } from "@fortawesome/free-brands-svg-icons";
-import { useState } from "react";
 import { twMerge } from "tailwind-merge";
 
 export const Desk = () => {
@@ -41,12 +33,15 @@ export const Desk = () => {
             CM
           </small>
         </h1>
-        <h1 className="text-xl font-light text-zinc-900 bg-zinc-500 px-2 rounded">
+        <h1 className="text-xl font-light text-blue-500 bg-blue-900/30 px-2 rounded">
           {device.name}
         </h1>
       </div>
       <div className="grid grid-cols-24 gap-2">
-        <Button className="col-span-3 bg-red-500/20 text-white border-red-500/20 hover:bg-red-500/25" onClick={() => onDisconnect()}>
+        <Button
+          className="col-span-3 text-red-500 hover:bg-red-900/30 hover:text-red-500 hover:ring-red-500/25 hover:shadow-red-800/20"
+          onClick={() => onDisconnect()}
+        >
           <FontAwesomeIcon icon={faPowerOff} />
         </Button>
         <Button className="col-span-3" onClick={() => desk.stop()}>
@@ -66,9 +61,9 @@ export const Desk = () => {
         </Button>
         <Button
           className={twMerge(
-            "col-span-3",
+            "col-span-3 hover:bg-emerald-900/30 hover:text-emerald-500 hover:ring-emerald-500/25 hover:shadow-emerald-800/20",
             autoMove
-              ? "bg-emerald-500/25 border-emerald-500/25 text-white hover:bg-emerald-500/30"
+              ? "bg-emerald-500/25 ring-emerald-500/25 text-white hover:bg-emerald-500/30"
               : ""
           )}
           onClick={() => toggleAutoMove()}
@@ -76,9 +71,9 @@ export const Desk = () => {
           <FontAwesomeIcon icon={autoMove ? faToggleOn : faToggleOff} />
         </Button>
         <Button
-          className="col-span-3"
+          className="col-span-3 hover:bg-yellow-900/30 hover:text-yellow-500 hover:ring-yellow-500/25 hover:shadow-yellow-800/20"
           onClick={() => {
-            setSlotSaving((n) => !n);
+            setSlotSaving(!slotSaving);
           }}
         >
           <FontAwesomeIcon icon={slotSaving ? faX : faFloppyDisk} />
