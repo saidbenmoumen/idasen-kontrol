@@ -14,6 +14,7 @@ export type State = {
 export type Actions = {
   onPair: () => void;
   setSlot: (slot: number, value?: number | null) => void;
+  removeSlot: (slot: number) => void;
   toggleAutoMove: () => void;
   setSlotSaving: (value: boolean) => void;
   onDisconnect: () => void;

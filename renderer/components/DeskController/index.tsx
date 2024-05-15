@@ -3,8 +3,9 @@ import { Actions, Slots } from "./types";
 import { Context, defaultSlots } from "./context";
 import { bufferToNum, hexStrToArray } from "./helpers";
 import _ from "lodash";
-const MINUTE_MS = 1000 * 60;
-const INTERVAL_MS = MINUTE_MS * 5;
+
+const MINUTE_MS = 1000 * 20;
+const INTERVAL_MS = MINUTE_MS * 30;
 
 const onemmtopos = 10;
 const namePrefix = "Desk";
@@ -34,6 +35,13 @@ export const DeskController = ({ children }) => {
 
   const actions: Actions = useMemo(
     () => ({
+      removeSlot: (slot) => {
+        setSlots((items) => {
+          const newItems = new Map(items);
+          newItems.set(slot, null);
+          return newItems;
+        });
+      },
       setSlot: (slot, value) => {
         const current = value ?? currentPosition;
         setSlots((items) => {

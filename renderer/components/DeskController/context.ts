@@ -18,6 +18,7 @@ export const Context = createContext<ContextProps>({
   },
   actions: {
     setSlot: () => {},
+    removeSlot: () => {},
     onPair: () => {},
     toggleAutoMove: () => {},
     setSlotSaving: () => {},
