@@ -23,7 +23,7 @@ if (isProd) {
   };
 
   const mainWindow = createWindow("main", {
-    title: "IDÅSEN control",
+    title: "IDÅSEN kontrol",
     width: 495,
     minWidth: 412,
     height: 201,

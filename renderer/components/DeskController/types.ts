@@ -1,22 +1,16 @@
 export type Slots = Map<number, number | null>;
 
 export type State = {
-  slots: Slots;
   currentPosition: number | null;
   device: BluetoothDevice | null;
-  server: BluetoothRemoteGATTServer | null;
-  service: BluetoothRemoteGATTService | null;
-  characteristic: BluetoothRemoteGATTCharacteristic | null;
   autoMove: boolean;
-  slotSaving: boolean;
-}
+  mode: Mode;
+};
 
 export type Actions = {
   onPair: () => void;
-  setSlot: (slot: number, value?: number | null) => void;
-  removeSlot: (slot: number) => void;
   toggleAutoMove: () => void;
-  setSlotSaving: (value: boolean) => void;
+  changeMode: (mode: Mode) => void;
   onDisconnect: () => void;
 };
 
@@ -27,14 +21,21 @@ export type Desk = {
   longMoveUp: () => void;
   longMoveDown: () => void;
   moveTo: (position: number) => void;
-}
+};
 
 export interface ContextProps {
   state: State;
   actions: Actions;
-  desk: Desk
+  desk: Desk;
+  slots: {
+    value: Map<string, number | null>;
+    set: (key: string, value?: number | null) => void;
+    remove: (key: string) => void;
+  };
 }
 
 export interface Props {
   children: React.ReactNode;
 }
+
+export type Mode = "slot-editor" | "normal";
